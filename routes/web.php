@@ -17,6 +17,15 @@ Route::get('/', function () {
     return view('topmenu');
 })->middleware('auth');
 
+Route::middleware('lentex')->group(function () {
+
+    Route::get('/student/add/', 'App\Http\Controllers\StudentController@add')->name('student-add');
+    Route::post('/student/add/', 'App\Http\Controllers\StudentController@create');
+    Route::post('/student/edit/', 'App\Http\Controllers\StudentController@edit');
+    Route::post('/student/delete/', 'App\Http\Controllers\StudentController@delete');
+
+});
+
 Route::get('/dashboard', function () {
     return view('dashboard');
 })->middleware(['auth', 'verified'])->name('dashboard');

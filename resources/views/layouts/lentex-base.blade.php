@@ -15,10 +15,10 @@
     </head>
     <body class="font-sans antialiased">
         <div class="min-h-screen bg-gray-100">
-            @include('layouts.navigation')
+            @include('layouts.lentex-navigation')
 
             <!-- Page Content -->
-            <main>
+            <main class="container px-5 py-24 mx-auto">
                 @yield('contents')
             </main>
         </div>
