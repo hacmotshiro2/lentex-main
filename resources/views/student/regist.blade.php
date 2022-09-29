@@ -36,11 +36,19 @@
                 @endif
             </div>
             <div class="mb-2">
-                <label for="appDisplayName" class="form-label">アプリ上の表示名</label>
+                <label for="appDispName" class="form-label">アプリ上の表示名</label>
                 @if($mode=='edit')
-                    <x-lentex-input type="text" name="appDisplayName" value="{{$item->appDisplayName}}" class="form-control" required  maxlength="40" />
+                    <x-lentex-input type="text" name="appDispName" value="{{$item->appDispName}}" class="form-control" required  maxlength="40" />
                 @else
-                    <x-lentex-input type="text" name="appDisplayName" value="{{old('appDisplayName')}}" class="form-control" required  maxlength="40" />
+                    <x-lentex-input type="text" name="appDispName" value="{{old('appDispName')}}" class="form-control" required  maxlength="40" />
+                @endif
+            </div>
+            <div class="mb-2">
+                <label for="messageDispName" class="form-label">メッセージの表示名</label>
+                @if($mode=='edit')
+                    <x-lentex-input type="text" name="messageDispName" value="{{$item->messageDispName}}" class="form-control" required  maxlength="40" />
+                @else
+                    <x-lentex-input type="text" name="messageDispName" value="{{old('messageDispName')}}" class="form-control" required  maxlength="40" />
                 @endif
             </div>
             <div class="mb-2">
@@ -61,7 +69,8 @@
                     <th>id</th>
                     <th>verificationName</th>
                     <th>verificationCode</th>
-                    <th>appDisplayName</th>
+                    <th>appDispName</th>
+                    <th>messageDispName</th>
                     <th>created_at</th>
                     <th>updated_at</th>
                     <th>deleted_at</th>
@@ -71,7 +80,8 @@
                     <td><a href="/student/add/?id={{$item->id}}" class="text-indigo-700"> << {{$item->id}} >> </a></td>
                     <td>{{$item->verificationName}}</td>
                     <td>{{$item->verificationCode}}</td>
-                    <td>{{$item->appDisplayName}}</td>
+                    <td>{{$item->appDispName}}</td>
+                    <td>{{$item->messageDispName}}</td>
                     <td>{{$item->created_at}}</td>
                     <td>{{$item->updated_at}}</td>
                     <td>{{$item->deleted_at}}</td>

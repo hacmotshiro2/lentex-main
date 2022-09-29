@@ -19,7 +19,8 @@ return new class extends Migration
             $table->id();
             $table->string('verificationName',255);
             $table->string('verificationCode',4);
-            $table->string('appDisplayName',40);    
+            $table->string('appDispName',40);    
+            $table->string('messageDispName',40);    
             $table->timestamps();
             $table->softDeletes();
         });

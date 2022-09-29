@@ -14,7 +14,8 @@ class Student extends Model
     protected $fillable = [
         'verificationName',
         'verificationCode',
-        'appDisplayName',
+        'appDispName',
+        'messageDispName',
     ];
 
     public static $rules = [
@@ -23,7 +24,9 @@ class Student extends Model
         'verificationName' => 'required',
         //verificationCode
         'verificationCode'=>'required',
-        //appDisplayName
-        'appDisplayName'=>'required',
+        //appDispName
+        'appDispName'=>'required',
+        //messageDispName
+        'messageDispName'=>'required',
     ];
 }
