@@ -5,7 +5,7 @@
             <div class="flex">
                 <!-- Logo -->
                 <div class="shrink-0 flex items-center">
-                    <a href="{{ route('dashboard') }}">
+                    <a href="{{ route('top') }}">
                         <img src="/images/lentex_logo_mini.png" class="block h-10 w-auto fill-current " />
                     </a>
                 </div>
@@ -14,6 +14,11 @@
                 <div class="hidden space-x-8 sm:-my-px sm:ml-10 sm:flex">
                     <x-nav-link :href="route('student-add')" :active="request()->routeIs('student-add')">
                         生徒登録
+                    </x-nav-link>
+                </div>
+                <div class="hidden space-x-8 sm:-my-px sm:ml-10 sm:flex">
+                    <x-nav-link :href="route('lineu-index')" :active="request()->routeIs('lineu-index')">
+                        ライン通知先管理
                     </x-nav-link>
                 </div>
             </div>

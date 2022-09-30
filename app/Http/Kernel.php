@@ -45,6 +45,7 @@ class Kernel extends HttpKernel
         ],
         'lentex' =>[
             \App\Http\Middleware\Authenticate::class,
+            \App\Http\Middleware\LentexAuthorization::class,
         ],    
     ];
 

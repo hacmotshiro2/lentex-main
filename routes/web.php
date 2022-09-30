@@ -13,9 +13,11 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
+/* ~/api はnodeで使っているため、使わない */
+
 Route::get('/', function () {
     return view('topmenu');
-})->middleware('auth');
+})->name('top')->middleware('auth');
 
 Route::middleware('lentex')->group(function () {
 
@@ -23,6 +25,11 @@ Route::middleware('lentex')->group(function () {
     Route::post('/student/add/', 'App\Http\Controllers\StudentController@create');
     Route::post('/student/edit/', 'App\Http\Controllers\StudentController@edit');
     Route::post('/student/delete/', 'App\Http\Controllers\StudentController@delete');
+
+    Route::get('/lineuser/index/', 'App\Http\Controllers\LineUserController@index')->name('lineu-index');
+    Route::post('/lineuser/delete/', 'App\Http\Controllers\LineUserController@delete');
+
+    Route::get('/userauth/add/', 'App\Http\Controllers\LineUserController@index')->name('userAuth-regist');
 
 });
 
