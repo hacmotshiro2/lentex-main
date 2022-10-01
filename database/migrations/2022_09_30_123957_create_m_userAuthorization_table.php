@@ -13,6 +13,7 @@ return new class extends Migration
      */
     public function up()
     {
+        if(Schema::hasTable('m_userauthorization')){return;}
         Schema::create('m_userauthorization', function (Blueprint $table) {
             $table->collation = 'utf8mb4_general_ci';
 
