@@ -27,7 +27,7 @@ lineusers確認ページ
                     <td class="border border-slate-700">{{$item->created_at}}</td>
                     <td class="border border-slate-700">{{$item->updated_at}}</td>
                     <td class="border border-slate-700">{{$item->deleted_at}}</td>
-                    <td class="border border-slate-700"><a href="/lineusers/delete/?id={{$item->id}}"><div class="inline-block items-center px-4 py-2 bg-red-800 border border-transparent rounded-md font-semibold text-base text-white uppercase tracking-widest hover:bg-red-700 active:bg-red-900 focus:outline-none focus:border-red-900 focus:ring ring-red-300 disabled:opacity-25 transition ease-in-out duration-150"> 削除</div></td>
+                    <td class="border border-slate-700"><a href="/lineuser/delete/?id={{$item->id}}"><div class="inline-block items-center px-4 py-2 bg-red-800 border border-transparent rounded-md font-semibold text-base text-white uppercase tracking-widest hover:bg-red-700 active:bg-red-900 focus:outline-none focus:border-red-900 focus:ring ring-red-300 disabled:opacity-25 transition ease-in-out duration-150"> 削除</div></td>
                 </tr>
                 @endforeach
             </table>
