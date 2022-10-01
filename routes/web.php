@@ -22,14 +22,16 @@ Route::get('/', function () {
 Route::middleware('lentex')->group(function () {
 
     Route::get('/student/add/', 'App\Http\Controllers\StudentController@add')->name('student-add');
-    Route::post('/student/add/', 'App\Http\Controllers\StudentController@create');
+    Route::post('/student/create/', 'App\Http\Controllers\StudentController@create');
     Route::post('/student/edit/', 'App\Http\Controllers\StudentController@edit');
     Route::post('/student/delete/', 'App\Http\Controllers\StudentController@delete');
 
     Route::get('/lineuser/index/', 'App\Http\Controllers\LineUserController@index')->name('lineu-index');
-    Route::post('/lineuser/delete/', 'App\Http\Controllers\LineUserController@delete');
+    Route::get('/lineuser/delete/', 'App\Http\Controllers\LineUserController@delete');
 
-    Route::get('/userauth/add/', 'App\Http\Controllers\LineUserController@index')->name('userAuth-regist');
+    Route::get('/userauth/add/', 'App\Http\Controllers\UserAuthController@add')->name('userAuth-add');
+    Route::post('/userauth/create/', 'App\Http\Controllers\UserAuthController@create');
+    Route::get('/userauth/delete/', 'App\Http\Controllers\UserAuthController@delete');
 
 });
 

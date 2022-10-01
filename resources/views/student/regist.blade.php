@@ -58,7 +58,7 @@
                         <x-lentex-submit formaction="/student/delete" :mode="'delete'">削除</x-lentex-submit>
                     </div>
                 @elseif($mode=='add')
-                    <x-lentex-submit formaction="/student/add" :mode="'add'">登録</x-lentex-submit>
+                    <x-lentex-submit formaction="/student/create" :mode="'add'">登録</x-lentex-submit>
                 @else
                 @endif
             </div>
