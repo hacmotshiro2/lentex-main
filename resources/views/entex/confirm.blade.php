@@ -30,7 +30,7 @@
             </div>
         </form>
         <div class="w-full flex justify-center my-8">
-            <a href="/entex/students" class="flex items-center bg-gray-400 rounded-lg overflow-hidden shadow-lg p-4">
+            <a href="/entex/students?lrcd={{$lrcd}}" class="flex items-center bg-gray-400 rounded-lg overflow-hidden shadow-lg p-4">
                 <span class="text-white text-lg lg:text-xl font-bold">< 生徒選択に戻る</span>
             </a>
         </div>
