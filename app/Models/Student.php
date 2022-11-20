@@ -16,6 +16,7 @@ class Student extends Model
         'verificationCode',
         'appDispName',
         'messageDispName',
+        'lsuppoStudentCd',
     ];
 
     public static $rules = [
@@ -28,5 +29,7 @@ class Student extends Model
         'appDispName'=>'required',
         //messageDispName
         'messageDispName'=>'required',
+        //lsuppoStudentCd
+        // 'lsuppoStudentCd'=>'required',
     ];
 }

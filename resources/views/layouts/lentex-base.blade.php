@@ -19,6 +19,12 @@
 
             <!-- Page Content -->
             <main class="container px-5 py-24 mx-auto">
+                <div>
+                    @if(!empty($alertComp))
+                    <x-lentex-alert-completed :alert="$alertComp" />
+                    @endif
+                </div>
+
                 @yield('contents')
             </main>
         </div>

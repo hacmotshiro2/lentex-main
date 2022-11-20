@@ -52,6 +52,14 @@
                 @endif
             </div>
             <div class="mb-2">
+                <label for="lsuppoStudentCd" class="form-label">エルサポのStudentCd</label>
+                @if($mode=='edit')
+                    <x-lentex-input type="text" name="lsuppoStudentCd" value="{{$item->lsuppoStudentCd}}" class="form-control" maxlength="8" />
+                @else
+                    <x-lentex-input type="text" name="lsuppoStudentCd" value="{{old('lsuppoStudentCd')}}" class="form-control" maxlength="8" />
+                @endif
+            </div>
+            <div class="mb-2">
                 @if($mode=='edit')
                     <div class="flex justify-between">
                         <x-lentex-submit formaction="/student/edit" :mode="'edit'">更新</x-lentex-submit>
@@ -71,6 +79,7 @@
                     <th>verificationCode</th>
                     <th>appDispName</th>
                     <th>messageDispName</th>
+                    <th>lsuppoStudentCd</th>
                     <th>created_at</th>
                     <th>updated_at</th>
                     <th>deleted_at</th>
@@ -82,6 +91,7 @@
                     <td>{{$item->verificationCode}}</td>
                     <td>{{$item->appDispName}}</td>
                     <td>{{$item->messageDispName}}</td>
+                    <td>{{$item->lsuppoStudentCd}}</td>
                     <td>{{$item->created_at}}</td>
                     <td>{{$item->updated_at}}</td>
                     <td>{{$item->deleted_at}}</td>

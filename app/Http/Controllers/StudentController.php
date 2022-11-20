@@ -46,7 +46,7 @@ class StudentController extends Controller
     }
     //生徒編集画面のPOST
     public function edit(Request $request){
-        print($request->id);
+        // print($request->id);
         $this->validate($request, Student::$rules);
         $student = Student::find($request->id);
         $form = $request->all();

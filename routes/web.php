@@ -13,13 +13,20 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-/* ~/api はnodeで使っているため、使わない */
+/* ~/api/ はnodeで使っているため、使わない */
 
 Route::get('/', function () {
     return view('topmenu');
 })->name('top')->middleware('auth');
 
 Route::middleware('lentex')->group(function () {
+
+    Route::get('/entex/lrs','App\Http\Controllers\EntexController@selectLRs')->name('entex-lrs');
+    Route::get('/entex/students','App\Http\Controllers\EntexController@selectStudents')->name('entex-students');
+    Route::post('/entex/confirm','App\Http\Controllers\EntexController@confirm')->name('entex-confirm');
+    Route::post('/entex/enter','App\Http\Controllers\EntexController@enter');
+    Route::post('/entex/exit','App\Http\Controllers\EntexController@exit');
+    Route::get('/entex/history','App\Http\Controllers\EntexController@indexEntexHistory')->name('entex-history');
 
     Route::get('/student/add/', 'App\Http\Controllers\StudentController@add')->name('student-add');
     Route::post('/student/create/', 'App\Http\Controllers\StudentController@create');

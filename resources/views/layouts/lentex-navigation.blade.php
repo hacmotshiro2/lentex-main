@@ -12,6 +12,11 @@
 
                 <!-- Navigation Links -->
                 <div class="hidden space-x-8 sm:-my-px sm:ml-10 sm:flex">
+                    <x-nav-link :href="route('entex-lrs')" :active="request()->routeIs('entex-lrs')">
+                        入退室処理
+                    </x-nav-link>
+                </div>
+                <div class="hidden space-x-8 sm:-my-px sm:ml-10 sm:flex">
                     <x-nav-link :href="route('student-add')" :active="request()->routeIs('student-add')">
                         生徒登録
                     </x-nav-link>
