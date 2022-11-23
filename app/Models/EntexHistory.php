@@ -10,6 +10,28 @@ class EntexHistory extends Model
     use HasFactory;
     protected $table = 'r_len_entexhistory';
 
+    private $select = "
+    SELECT 
+    MAIN.id,
+    MAIN.student_id,
+    mst.messageDispName,
+    MAIN.type,
+    CASE MAIN.type WHEN 1 THEN '入室' WHEN 2 THEN '退室' ELSE '' END as TypeNae,
+    MAIN.LearningRoomCd,
+    MAIN.entex_datetime,
+    MAIN.created_at,
+    MAIN.updated_at,
+    MAIN.deleted_at
+
+    FROM r_len_entexHistory MAIN 
+    LEFT OUTER JOIN m_len_students mst
+    ON mst.id = MAIN.student_id 
+    ";
+
+    private $orderby = "
+        ORDER BY MAIN.student_id ,MAIN.entex_datetime DESC
+    ";
+
     protected $fillable = [
         'student_id',
         'type',
@@ -28,4 +50,31 @@ class EntexHistory extends Model
         //entex_datetime
         'entex_datetime'=>'required',
     ];
+    //すべての生徒の入退室履歴を確認する
+    public static function getEntexHistoryAll(){
+
+        return DB::select(
+        $this.$select."    
+        WHERE 
+        MAIN.deleted_at IS NULL
+        ".$this.$orderby);
+
+
+    }
+    //生徒ごとの入退室履歴を確認する
+    public static function getEntexHistory(string $student_id){
+
+        $param = [
+            'student_id'=>$student_id,
+        ];
+        return DB::select(
+        $this.$select."    
+        WHERE MAIN.student_id = :student_id
+        AND MAIN.deleted_at IS NULL
+        ".$this.$orderby
+        ,$param);
+
+
+    }
+    
 }
