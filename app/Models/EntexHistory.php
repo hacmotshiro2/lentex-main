@@ -4,19 +4,20 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\DB;
 
 class EntexHistory extends Model
 {
     use HasFactory;
     protected $table = 'r_len_entexhistory';
 
-    private $select = "
+    private static $select = "
     SELECT 
     MAIN.id,
     MAIN.student_id,
     mst.messageDispName,
     MAIN.type,
-    CASE MAIN.type WHEN 1 THEN '入室' WHEN 2 THEN '退室' ELSE '' END as TypeNae,
+    CASE MAIN.type WHEN 1 THEN '入室' WHEN 2 THEN '退室' ELSE '' END as typeName,
     MAIN.LearningRoomCd,
     MAIN.entex_datetime,
     MAIN.created_at,
@@ -28,7 +29,7 @@ class EntexHistory extends Model
     ON mst.id = MAIN.student_id 
     ";
 
-    private $orderby = "
+    private static $orderby = "
         ORDER BY MAIN.student_id ,MAIN.entex_datetime DESC
     ";
 
@@ -54,10 +55,10 @@ class EntexHistory extends Model
     public static function getEntexHistoryAll(){
 
         return DB::select(
-        $this.$select."    
+        self::$select."    
         WHERE 
         MAIN.deleted_at IS NULL
-        ".$this.$orderby);
+        ".self::$orderby);
 
 
     }
@@ -68,10 +69,10 @@ class EntexHistory extends Model
             'student_id'=>$student_id,
         ];
         return DB::select(
-        $this.$select."    
+        self::$select."    
         WHERE MAIN.student_id = :student_id
         AND MAIN.deleted_at IS NULL
-        ".$this.$orderby
+        ".self::$orderby
         ,$param);
 
 
