@@ -24,7 +24,7 @@ class EntexHistory extends Model
     MAIN.updated_at,
     MAIN.deleted_at
 
-    FROM r_len_entexHistory MAIN 
+    FROM r_len_entexhistory MAIN 
     LEFT OUTER JOIN m_len_students mst
     ON mst.id = MAIN.student_id 
     ";
