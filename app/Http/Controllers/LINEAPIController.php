@@ -3,7 +3,7 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-
+use Illuminate\Support\Facades\Log;
 use LINE\LINEBot\HTTPClient\CurlHTTPClient;
 use LINE\LINEBot\MessageBuilder\TextMessageBuilder;
 use LINE\LINEBot;
@@ -65,8 +65,66 @@ class LINEAPIController extends Controller
             $messageText = $event['message']['text'];
 
             /* 1. 初期登録用 */
+            // 山田太郎-1234 
+            // -で分割して、右4桁が数字がどうかで判定します
+            $splited = explode('-',$messageText);
+            if(count($splited)==2 and is_numeric($splited[1])){
+                Log::Info('lineWebhookの初期登録処理が開始されました',[$messageText]);
 
+                //メッセージとStudentマスタの突合を行う
+                $student = Student::where('verificationName',$splited[0])->where('verificationCode',$splited[1])->first();
+                
+                if(empty($student)){
+                    /* Studentと突合出来なかった場合 */
+                    Log::Info('初期登録処理でStudentマスタと一致しませんでした',[$messageText]);
 
+                    $bot->replyMessage($replyToken,new TextMessageBuilder("お子様の名前か識別コードが異なるようです。\nお子様の名前に識別コードを添えて送信してください。\n例)山田太郎-5671"));
+
+                }
+                else{
+                    /* Studentと突合できた場合 */
+                    Log::Info('初期登録処理でStudentマスタと一致しました',[$messageText]);
+
+                    //UserIdの取得
+                    $userId = $event['source']['userId'];
+                    
+                    //すでに登録されているかのチェック
+                    $lineuser = LineUser::where('lineUserId',$userId)->where('student_id',$student->id)->first();
+                    
+                    if(!empty($lineuser)){
+                        /* すでに登録されている場合 */
+                        Log::Info('すでに登録されていました',[$messageText]);
+
+                        $bot->replyMessage($replyToken,new TextMessageBuilder("既にご登録頂いています"));
+    
+                    }
+                    else{
+                        /* 登録がまだの場合 */
+                        Log::Info('ユーザ登録処理を開始します',[$messageText]);
+                        //LINEプロファイル情報の取得
+                        $profileRes = $bot->getProfile($userId);
+                        $displayName='';
+                        if($profileRes->isSucceeded()){
+                            $profile = $profileRes->getJSONDecodedBody();
+                            $displayName = $profile['displayName'];
+                        }
+
+                        //ユーザー登録処理
+                        $lineUser = new LineUser();
+                        $lineUser->student_id = $student->id;
+                        $lineUser->lineDisplayName = $displayName;
+                        $lineUser->lineUserId = $userId;
+
+                        $lineUser->save();
+
+                        $bot->replyMessage($replyToken,new TextMessageBuilder("正しく登録できました。ありがとうございました。"));
+
+                        Log::Info('ユーザ登録処理が完了',[$messageText]);
+
+                    }
+                }
+
+            } /* 1. 初期登録用 ここまで *
 
             /* 2.入退室履歴確認 */
             //「入退室履歴を確認する」というメッセージが届いたら
