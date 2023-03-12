@@ -18,9 +18,9 @@
           <input type="hidden" name="student_id" value="{{$student->id}}"/>
           <input type="hidden" name="student_name" value="{{$student->appDispName}}"/>
           <div>
-            <button class="group h-48 flex items-end bg-indigo-700 rounded-lg overflow-hidden shadow-lg relative p-4">
+            <button class="group w-40 h-48 flex items-end bg-indigo-700 rounded-lg overflow-hidden shadow-lg relative p-4">
               <div class="w-full flex flex-col bg-white text-center rounded-lg relative p-4">
-                <span class="text-gray-500">{{$student->id}}</span>
+                {{-- <span class="text-gray-500">{{$student->id}}</span> --}}
                 <span class="text-gray-800 text-lg lg:text-xl font-bold">{{$student->appDispName}}</span>
               </div>
             </button>
