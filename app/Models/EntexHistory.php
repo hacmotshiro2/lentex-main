@@ -29,8 +29,11 @@ class EntexHistory extends Model
     ON mst.id = MAIN.student_id 
     ";
 
+    // private static $orderby = "
+    //     ORDER BY MAIN.student_id ,MAIN.entex_datetime DESC
+    // ";
     private static $orderby = "
-        ORDER BY MAIN.student_id ,MAIN.entex_datetime DESC
+        ORDER BY MAIN.entex_datetime DESC, MAIN.student_id
     ";
 
     protected $fillable = [
