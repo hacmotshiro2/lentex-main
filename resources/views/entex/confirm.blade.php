@@ -13,6 +13,9 @@
             <input type="hidden" name="lrcd" value="{{$lrcd}}"/>
             <input type="hidden" name="student_id" value="{{$student_id}}"/>
             <div class="flex flex-wrap gap-4 md:gap-8 lg:gap-12 justify-center">
+                    <div id="app">
+                        <example-component></example-component>
+                    </div>
                     <div>
                         <button formaction="/entex/enter" class="group h-48 flex items-end bg-blue-400 rounded-lg overflow-hidden shadow-lg relative p-12">
                         <div class="w-full flex flex-col bg-white text-center rounded-lg relative p-4">
