@@ -12,6 +12,9 @@
 
         <!-- Scripts -->
         @vite(['resources/css/app.css', 'resources/js/app.js'])
+
+        <!-- livewireで決まり文句 -->
+        @livewireStyles
     </head>
     <body class="font-sans antialiased">
         <div class="min-h-screen bg-gray-100">
@@ -28,5 +31,7 @@
                 @yield('contents')
             </main>
         </div>
+        <!-- livewireで決まり文句 -->
+        @livewireScripts
     </body>
 </html>
