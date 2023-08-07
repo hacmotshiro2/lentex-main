@@ -8,6 +8,9 @@
 <div class="bg-white py-6 sm:py-8 lg:py-12">
     <div class="max-w-screen-2xl px-4 md:px-8 mx-auto">
         <h2 class="text-gray-800 text-2xl lg:text-3xl font-bold text-center mb-8 md:mb-12">{{$student_name}}　さん</h2>
+        <h3 class="text-gray-800 text-2xl lg:text-3xl font-bold text-center mb-8 md:mb-12">
+            <span id="clock"></span>
+        </h3>
         <form method="POST">
             @csrf
             <input type="hidden" name="lrcd" value="{{$lrcd}}"/>
@@ -36,4 +39,21 @@
         </div>
     </div>
 </div>
+<script >
+    // 時刻を表示するための関数
+    function displayClock() {
+        const now = new Date();
+        const hours = String(now.getHours()).padStart(2, '0');
+        const minutes = String(now.getMinutes()).padStart(2, '0');
+        const seconds = String(now.getSeconds()).padStart(2, '0');
+        const formattedTime = `${hours}:${minutes}:${seconds}`;
+        document.getElementById('clock').textContent = formattedTime;
+    }
+
+    // 1秒ごとに時刻を更新
+    setInterval(displayClock, 1000);
+
+    // ページ読み込み時に初回の表示を行う
+    displayClock();
+</script>
 @endsection
