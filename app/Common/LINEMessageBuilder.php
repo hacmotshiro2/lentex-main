@@ -90,7 +90,11 @@ class LINEMessageBuilder
             //生徒単位のループ
 
             //入退室履歴テーブルから情報を取得する
-            $litems = EntexHistory::getEntexHistory($user->student_id);
+            // 2023/08/08 Eloquent化に伴う変更
+            // $litems = EntexHistory::getEntexHistory($user->student_id);
+            // Student_idが一致するものを取得
+            // 入退室時刻の降順で10件だけ
+            $litems = EntexHistory::where('student_id',$user->student_id)->orderBy('entex_datetime','desc')->limit(10)->get();
             $student = Student::find($user->student_id);
 
             $message = "";
@@ -116,16 +120,24 @@ class LINEMessageBuilder
                 // $message = $student->messageDispName."さんの入退室履歴";//NG
                 $message = ($student->messageDispName)."さんの入退室履歴\n\n";//( )がないとエラー
 
-                $i = 0;
-                foreach($litems as $item){
-                    if($i>9){
-                        break;
-                    }
-                    $typeName = $item->type=='1'?'入室':'退室';
-                    $message = $message.date('m/d H:i', strtotime(($item->entex_datetime)))." ".$typeName."\n";
+                // 2023/08/08 Eloquent化に伴う変更
+                // $i = 0;
+                // foreach($litems as $item){
+                //     if($i>9){
+                //         break;
+                //     }
+                //     // 2023/08/08 Eloquent化に伴う変更
+                //     // $typeName = $item->type=='1'?'入室':'退室';
+                //     $typeName = $item->type=='1'?'入室':'退室';
+                //     $message = $message.date('m/d H:i', strtotime(($item->entex_datetime)))." ".$typeName."\n";
                     
-                    $i++;
+                //     $i++;
+                // }
+
+                foreach($litems as $item){
+                    $message = $message.$item->formattedHistory."\n";
                 }
+
                 $message=$message."※直近10件を表示しています";
 
                 $multiMes->add(new TextMessageBuilder($message));
