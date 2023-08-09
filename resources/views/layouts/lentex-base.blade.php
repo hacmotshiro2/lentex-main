@@ -9,12 +9,28 @@
 
         <!-- Fonts -->
         <link rel="stylesheet" href="https://fonts.bunny.net/css2?family=Nunito:wght@400;600;700&display=swap">
-
+        
         <!-- Scripts -->
         @vite(['resources/css/app.css', 'resources/js/app.js'])
 
         <!-- livewireで決まり文句 -->
         @livewireStyles
+
+        <!-- Fontawesome -->
+        <link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.1/css/all.min.css">
+
+        <style type="text/css">
+       .sorticon{
+             visibility: hidden;
+             color: darkgray;
+       }
+       .sort:hover .sorticon{
+             visibility: visible;
+       }
+       .sort:hover{
+             cursor: pointer;
+       }
+       </style>
     </head>
     <body class="font-sans antialiased">
         <div class="min-h-screen bg-gray-100">

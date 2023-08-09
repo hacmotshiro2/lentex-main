@@ -202,14 +202,16 @@ class EntexController extends Controller
     //GET 入退室履歴ブラウズ
     public function indexEntexHistory(Request $request){
 
-        // $items = EntexHistory::orderBy('entex_datetime','desc')->get();
-        $items = EntexHistory::getEntexHistoryAll();
+        // LiveWire化に伴う変更
+        // // $items = EntexHistory::orderBy('entex_datetime','desc')->get();
+        // $items = EntexHistory::getEntexHistoryAll();
 
-        $args=[
-            'items' => $items,
-        ];
+        // $args=[
+        //     'items' => $items,
+        // ];
 
-        return view('entex.entexhistory',$args);
+        // return view('entex.entexhistory',$args);
+        return view('entex.entexhistory');
 
     }
 
