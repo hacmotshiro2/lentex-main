@@ -37,17 +37,65 @@
             @include('layouts.lentex-navigation')
 
             <!-- Page Content -->
-            <main class="container px-5 py-24 mx-auto">
+            <main class="container px-5 py-8 lg:py-12 mx-auto">
                 <div>
                     @if(!empty($alertComp))
                     <x-lentex-alert-completed :alert="$alertComp" />
                     @endif
                 </div>
 
-                @yield('contents')
+                <!-- livewireテンプレートだけの場合はslot -->
+                @if (isset($slot))
+                <div class="flex flex-wrap md:flex-nowrap">
+                    <div class="ml-4">
+                        <div id='list'>
+                        </div>
+                        <div>
+                            {{$slot}}
+                        </div>
+                    </div>
+                </div>
+                @else
+                    @yield('contents')
+                @endif
             </main>
         </div>
+        <!-- モーダル -->
+        <div id="delete-modal" class="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 hidden">
+            <div class="bg-white p-6 rounded shadow-lg text-center">
+                <p class="mb-4">削除してよろしいですか？</p>
+                <button id="confirm-delete" class="bg-red-500 text-white px-4 py-2 rounded mr-2">削除する</button>
+                <button onclick="closeModal()" class="bg-gray-300 px-4 py-2 rounded">キャンセル</button>
+            </div>
+        </div>
+        
         <!-- livewireで決まり文句 -->
         @livewireScripts
+        <script>
+            let deleteId = null;
+
+            function confirmDelete(id) {
+                deleteId = id;
+                document.getElementById('delete-modal').classList.remove('hidden');
+            }
+
+            function closeModal() {
+                deleteId = null;
+                document.getElementById('delete-modal').classList.add('hidden');
+            }
+
+            document.addEventListener('DOMContentLoaded', () => {
+                const confirmDeleteButton = document.getElementById('confirm-delete');
+                if (confirmDeleteButton) {
+                    confirmDeleteButton.addEventListener('click', function () {
+                        if (deleteId !== null) {
+                            Livewire.emit('deleteSession', deleteId); // Livewireイベントをトリガー
+                            closeModal();
+                        }
+                    });
+                }
+            });
+        </script>
+
     </body>
 </html>

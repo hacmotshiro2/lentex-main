@@ -26,7 +26,9 @@ Route::middleware('lentex')->group(function () {
     Route::post('/entex/confirm','App\Http\Controllers\EntexController@confirm')->name('entex-confirm');
     Route::post('/entex/enter','App\Http\Controllers\EntexController@enter');
     Route::post('/entex/exit','App\Http\Controllers\EntexController@exit');
-    Route::get('/entex/history','App\Http\Controllers\EntexController@indexEntexHistory')->name('entex-history');
+    //livewireを直接呼び出す方がよいとわかったため変更
+    // Route::get('/entex/history','App\Http\Controllers\EntexController@indexEntexHistory')->name('entex-history');
+    Route::get('/entex/history',App\Http\Livewire\EntexHistory::class)->name('entex-history');
 
     Route::get('/student/add/', 'App\Http\Controllers\StudentController@add')->name('student-add');
     Route::post('/student/create/', 'App\Http\Controllers\StudentController@create');
@@ -39,6 +41,12 @@ Route::middleware('lentex')->group(function () {
     Route::get('/userauth/add/', 'App\Http\Controllers\UserAuthController@add')->name('userAuth-add');
     Route::post('/userauth/create/', 'App\Http\Controllers\UserAuthController@create');
     Route::get('/userauth/delete/', 'App\Http\Controllers\UserAuthController@delete');
+
+    //v2.0
+    Route::get('/supermenu/',function() { return view('supermenu'); })->name('supermenu');
+    Route::get('/sessions/',\App\Http\Livewire\SessionCreate::class)->name('sessions.create');
+    Route::get('/sessions/{session_id}/attendance', \App\Http\Livewire\SessionAttendanceEdit::class)->name('sessions.attend-edit');
+
 
 });
 

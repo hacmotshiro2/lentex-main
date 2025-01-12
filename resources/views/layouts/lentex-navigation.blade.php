@@ -12,18 +12,18 @@
 
                 <!-- Navigation Links -->
                 <div class="hidden space-x-8 sm:-my-px sm:ml-10 sm:flex">
+                    <x-nav-link :href="route('sessions.create')" :active="request()->routeIs('sessions.create')">
+                        セッション登録
+                    </x-nav-link>
+                </div>
+                <div class="hidden space-x-8 sm:-my-px sm:ml-10 sm:flex">
                     <x-nav-link :href="route('entex-lrs')" :active="request()->routeIs('entex-lrs')">
                         入退室処理
                     </x-nav-link>
                 </div>
                 <div class="hidden space-x-8 sm:-my-px sm:ml-10 sm:flex">
-                    <x-nav-link :href="route('student-add')" :active="request()->routeIs('student-add')">
-                        生徒登録
-                    </x-nav-link>
-                </div>
-                <div class="hidden space-x-8 sm:-my-px sm:ml-10 sm:flex">
-                    <x-nav-link :href="route('lineu-index')" :active="request()->routeIs('lineu-index')">
-                        ライン通知先管理
+                    <x-nav-link :href="route('entex-history')" :active="request()->routeIs('entex-history')">
+                        入退室履歴
                     </x-nav-link>
                 </div>
             </div>
@@ -42,8 +42,10 @@
                             </div>
                         </button>
                     </x-slot>
-
                     <x-slot name="content">
+                    <x-dropdown-link :href="route('supermenu')">
+                                管理者メニュー
+                            </x-dropdown-link>
                         <!-- Authentication -->
                         <form method="POST" action="{{ route('logout') }}">
                             @csrf
@@ -73,8 +75,21 @@
     <!-- Responsive Navigation Menu -->
     <div :class="{'block': open, 'hidden': ! open}" class="hidden sm:hidden">
         <div class="pt-2 pb-3 space-y-1">
-            <x-responsive-nav-link :href="route('dashboard')" :active="request()->routeIs('dashboard')">
-                {{ __('Dashboard') }}
+            <!-- Navigation Links -->
+            <x-responsive-nav-link :href="route('sessions.create')" :active="request()->routeIs('sessions.create')">
+                セッション登録
+            </x-responsive-nav-link>
+        </div>
+        <div class="pt-2 pb-3 space-y-1">
+            <!-- Navigation Links -->
+            <x-responsive-nav-link :href="route('entex-lrs')" :active="request()->routeIs('entex-lrs')">
+                入退室処理
+            </x-responsive-nav-link>
+        </div>
+        <div class="pt-2 pb-3 space-y-1">
+            <!-- Navigation Links -->
+            <x-responsive-nav-link :href="route('entex-history')" :active="request()->routeIs('entex-history')">
+                入退室履歴 
             </x-responsive-nav-link>
         </div>
 
