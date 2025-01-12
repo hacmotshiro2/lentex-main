@@ -24,7 +24,10 @@ class EntexHistory extends Component
               'histories' => $items,
           ];
   
-        return view('livewire.entex-history',$args);
+        return view('livewire.entex-history',$args)
+        ->layout('layouts.lentex-base', [ // 既存のレイアウトを指定
+            'title' => '入退室履歴確認ページ', // Bladeの @yield('title') に値を渡す
+        ]);
     }
 
     public function updated(){
