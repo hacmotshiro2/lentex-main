@@ -30,11 +30,11 @@ class LR
         try{
             $raw_data = file_get_contents($url, false,$context);
             if($raw_data==false){
-                abort(500);
+                abort(500,MessageConst::CANT_GET_LR);
             }
         }
         catch(Exception $ex){
-            abort(500);
+            abort(500,MessageConst::CANT_GET_LR);
         }
 
         // $lrs= json_decode('[{"LearningRoomCd":"100001","LearningRoomName":"\u7389\u9020\u672c\u6821","UpdateGamen":"seeder","UpdateSystem":"lsuppo","created_at":null,"updated_at":null,"deleted_at":null},{"LearningRoomCd":"999999","LearningRoomName":"\u30c6\u30b9\u30c8LR","UpdateGamen":"manual","UpdateSystem":"manual","created_at":null,"updated_at":null,"deleted_at":null}]',true);

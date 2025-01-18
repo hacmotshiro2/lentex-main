@@ -45,6 +45,7 @@ class SessionCreate extends Component
             ->when(!$this->showPastSessions, function ($query) {
                 return $query->where('sessionStartTime', '>=', Carbon::today());
             })
+            ->withCount('plan2attends')
             ->orderBy('sessionStartTime', 'asc') // 開始日の昇順
             ->orderBy('course_id', 'asc')       // Course_idの昇順
             ->get();

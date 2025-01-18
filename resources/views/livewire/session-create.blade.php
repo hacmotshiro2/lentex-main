@@ -15,6 +15,7 @@
                 <th class="p-2 border-b">コース名</th>
                 <th class="p-2 border-b">開始時間</th>
                 <th class="p-2 border-b">終了時間</th>
+                <th class="p-2 border-b">出席予定人数</th>
                 <th class="p-2 border-b">操作</th>
             </tr>
         </thead>
@@ -25,6 +26,7 @@
                 <td class="p-2 border-b">{{ $session->course->courseName ?? 'N/A' }}</td>
                 <td class="p-2 border-b text-center">{{ \Carbon\Carbon::parse($session->sessionStartTime)->format('m月d 日 H:i') }}</td>
                 <td class="p-2 border-b text-center">{{ \Carbon\Carbon::parse($session->sessionEndTime)->format('m月d日 H:i') }}</td>
+                <td class="p-2 border-b text-center">{{ $session->plan2attends_count }}</td>
                 <td class="p-2 border-b text-center">
                     <div class="inline-flex items-center space-x-2">
                         <!-- 削除ボタン -->
