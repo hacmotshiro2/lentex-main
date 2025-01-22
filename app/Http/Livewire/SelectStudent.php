@@ -4,6 +4,8 @@ namespace App\Http\Livewire;
 
 use Livewire\Component;
 use Carbon\Carbon;
+use Illuminate\Support\Facades\Log;
+use Livewire\Attributes\Url;
 
 use App\Models\Session;
 use App\Models\Plan2Attend;
@@ -14,41 +16,28 @@ use App\Common\LR;
 
 class SelectStudent extends Component
 {
-    public $learningRooms = [];
-    public $sessions = [];
+    #[Url(keep: true)] 
+    public $session_idc='';
+
+    public $sessionId;
+    protected $queryString = ['session_id'];
+
     public $plan2attends = [];
     public $extraStudents = [];
     public $extraStudentOffset = 0;
     public $extraStudentLimit = 20;
     public $showPastSessions = false;
 
-    public $selectedLearningRoom = null;
-    public $selectedSession = null;
 
-    public function mount()
+    public function mount($session_id = null)
+    // public function mount()
     {
-        //APIでエルサポからLRを取得する
-        $this->learningRooms = LR::GetLRs();
-    }
-    //LRが選択された時の処理
-    public function updatedSelectedLearningRoom($value)
-    {
-        $this->sessions = Session::with('course')
-            ->where('LearningRoomCd', $value)
-            ->when(function ($query) {
-                return $query->where('sessionStartTime', '>=', Carbon::today());
-            })
-            ->orderBy('sessionStartTime', 'asc') // 開始日の昇順
-            ->orderBy('course_id', 'asc')       // Course_idの昇順
-            ->get();
+        Log::info('SelectStudent mount ',[$session_id]);
 
-        $this->selectedSession = null;
-        $this->plan2attends = [];
-    }
-    //セッションが選択された時の処理
-    public function updatedSelectedSession($value)
-    {
-        $this->plan2attends = Plan2Attend::where('session_id', $value)->get();
+        // クエリ文字列からsession_idを取得
+        $this->sessionId = $session_id;
+
+        $this->plan2attends = Plan2Attend::where('session_id', $this->sessionId)->get();
 
         // 追加の学生リストをリセット
         $this->resetExtraStudents();
@@ -79,15 +68,40 @@ class SelectStudent extends Component
     public function processStudent($studentId)
     {
         // 学生処理のロジック（仮）
-        session()->flash('message', "Student {$studentId} processed successfully!");
+        //lrcd,Studentマスタのidを受け取って、入退室選択画面に遷移する
+        $lrcd = $this->selectedLearningRoom;
+        $student_id = $studentId;
+        $student_name = Student::find($studentId)->appDispName;
+
+        //
+        $args=[
+            'lrcd'=> $lrcd,
+            'student_id'=> $student_id,
+            'student_name'=>$student_name,
+        ];
+
+        return view('entex.confirm',$args);
     }
 
     public function render()
     {
-        return view('livewire.select-student')
+        return view('livewire.select-student',
+        ['session_id'=>$this->sessionId,
+        'session_idc'=>$this->session_idc]
+        )
         ->layout('layouts.lentex-base', [ 
-            'title' => '入退室処理', // Bladeの @yield('title') に値を渡す
+            'title' => '入退室処理',
         ]);
         // 既存のレイアウトを指定
+    }
+
+    //これを書かないと正しく表示されなかった。
+    protected function queryString()
+    {
+        return [
+            'session_idc' => [
+                'as' => 'session_idc',
+            ],
+        ];
     }
 }

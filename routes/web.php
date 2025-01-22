@@ -46,8 +46,8 @@ Route::middleware('lentex')->group(function () {
     Route::get('/supermenu/',function() { return view('supermenu'); })->name('supermenu');
     Route::get('/sessions/',\App\Http\Livewire\SessionCreate::class)->name('sessions.create');
     Route::get('/sessions/{session_id}/attendance', \App\Http\Livewire\SessionAttendanceEdit::class)->name('sessions.attend-edit');
-    Route::get('/entex_s/', \App\Http\Livewire\SelectStudent::class)->name('entex-s');
-
+    Route::get('/select-session/', \App\Http\Livewire\SelectSession::class)->name('select.session');
+    Route::get('/select-student/', \App\Http\Livewire\SelectStudent::class)->name('select.student');
 
 });
 

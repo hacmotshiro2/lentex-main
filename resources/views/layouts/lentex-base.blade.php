@@ -46,8 +46,8 @@
 
                 <!-- livewireテンプレートだけの場合はslot -->
                 @if (isset($slot))
-                <div class="flex flex-wrap md:flex-nowrap">
-                    <div class="ml-4">
+                <div class="w-full mx-auto">
+                    <div class="mx-4">
                         <div id='list'>
                         </div>
                         <div>
