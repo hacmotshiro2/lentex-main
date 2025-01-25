@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Livewire;
+namespace App\Livewire;
 
 use Livewire\Component;
 use Carbon\Carbon;
@@ -89,7 +89,7 @@ class SelectStudent extends Component
         ['session_id'=>$this->sessionId,
         'session_idc'=>$this->session_idc]
         )
-        ->layout('layouts.lentex-base', [ 
+        ->layout('components.layouts.lentex-base', [ 
             'title' => '入退室処理',
         ]);
         // 既存のレイアウトを指定

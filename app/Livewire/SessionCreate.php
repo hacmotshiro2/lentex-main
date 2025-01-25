@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Livewire;
+namespace App\Livewire;
 
 use Livewire\Component;
 use Carbon\Carbon;
@@ -94,10 +94,11 @@ class SessionCreate extends Component
 
     public function render()
     {
-        return view('livewire.session-create') // Livewire用のビュー
-        ->layout('layouts.lentex-base', [ // 既存のレイアウトを指定
-            'title' => 'セッション登録ページ', // Bladeの @yield('title') に値を渡す
-        ]);
+        // return view('livewire.session-create') // Livewire用のビュー
+        // ->layout('components.layouts.lentex-base', [ // 既存のレイアウトを指定
+        //     'title' => 'セッション登録ページ', // Bladeの @yield('title') に値を渡す
+        // ]);
+        return view('livewire.session-create')->layout('components.layouts.lentex-base', ['title' => 'セッション登録ページ']);
     }
     
 }

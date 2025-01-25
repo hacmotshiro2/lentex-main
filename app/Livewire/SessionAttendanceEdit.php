@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Livewire;
+namespace App\Livewire;
 
 use Livewire\Component;
 use Illuminate\Support\Facades\Log;
@@ -91,7 +91,7 @@ class SessionAttendanceEdit extends Component
     public function render()
     {
         return view('livewire.session-attendance-edit') // Livewire用のビュー
-        ->layout('layouts.lentex-base', [ // 既存のレイアウトを指定
+        ->layout('components.layouts.lentex-base', [ // 既存のレイアウトを指定
             'title' => 'セッション出席予定登録ページ', // Bladeの @yield('title') に値を渡す
         ]);
     }

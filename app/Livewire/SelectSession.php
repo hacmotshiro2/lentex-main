@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Livewire;
+namespace App\Livewire;
 
 use Livewire\Component;
 use Carbon\Carbon;
@@ -48,7 +48,7 @@ class SelectSession extends Component
     public function render()
     {
         return view('livewire.select-session')
-        ->layout('layouts.lentex-base', [ 
+        ->layout('components.layouts.lentex-base', [ 
             'title' => '入退室処理', // Bladeの @yield('title') に値を渡す
         ]);
     }

@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Livewire;
+namespace App\Livewire;
 
 use Livewire\Component;
 use Livewire\WithPagination;
@@ -25,7 +25,7 @@ class EntexHistory extends Component
           ];
   
         return view('livewire.entex-history',$args)
-        ->layout('layouts.lentex-base', [ // 既存のレイアウトを指定
+        ->layout('components.layouts.lentex-base', [ // 既存のレイアウトを指定
             'title' => '入退室履歴確認ページ', // Bladeの @yield('title') に値を渡す
         ]);
     }
