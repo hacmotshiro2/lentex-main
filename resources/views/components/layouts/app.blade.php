@@ -15,7 +15,7 @@
     </head>
     <body class="font-sans antialiased">
         <div class="min-h-screen bg-gray-100">
-            @include('components.layouts.navigation')
+            @include('layouts.navigation')
 
             <!-- Page Heading -->
             @if (isset($header))
@@ -31,7 +31,5 @@
                 {{ $slot }}
             </main>
         </div>
-        <script src="/vendor/livewire/livewire.js"></script>
-
     </body>
 </html>
