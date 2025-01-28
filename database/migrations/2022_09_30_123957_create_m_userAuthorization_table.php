@@ -18,7 +18,7 @@ return new class extends Migration
             $table->collation = 'utf8mb4_general_ci';
 
             $table->id();
-            $table->integer('user_id')->unsigned();
+            $table->unsignedBigInteger('user_id')->unsigned();
             $table->string('description',255)->nullable();
 
             $table->timestamps();
