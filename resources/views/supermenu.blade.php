@@ -1,5 +1,5 @@
 
-@extends('layouts.lentex-base')
+@extends('components.layouts.lentex-base')
 
 @section('title')
 管理者メニュー

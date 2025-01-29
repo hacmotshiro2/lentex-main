@@ -15,7 +15,9 @@ return [
     |
     */
 
-    'class_namespace' => 'App\\Http\\Livewire',
+    // 3.0に伴う変更
+    // 'class_namespace' => 'App\\Http\\Livewire',
+    'class_namespace' => 'App\\Livewire',
 
     /*
     |--------------------------------------------------------------------------
@@ -39,7 +41,9 @@ return [
     |
     */
 
-    'layout' => 'layouts.app',
+    // 3.0に伴う変更
+    // 'layout' => 'layouts.app',
+    'layout' => 'components.layouts.app',
 
     /*
     |--------------------------------------------------------------------------
@@ -56,7 +60,9 @@ return [
 
     // 2023/08/09デプロイ時のエラー対応
     // 'asset_url' => null,
-    'asset_url' => env('APP_URL'),
+    // 'asset_url' => env('APP_URL'),
+    // 2025/01/25 Laravel 11 Livewire 3 の際にエラーが出たので、再度戻した。
+    'asset_url' => null,
 
     /*
     |--------------------------------------------------------------------------
@@ -112,7 +118,7 @@ return [
 
     /*
     |--------------------------------------------------------------------------
-    | Manifest File Path
+    | Manifest File Path *
     |--------------------------------------------------------------------------
     |
     | This value sets the path to the Livewire manifest file.
@@ -121,7 +127,7 @@ return [
     | cases like when hosting on Laravel Vapor, it could be set to a different value.
     |
     | Example: for Laravel Vapor, it would be "/tmp/storage/bootstrap/cache/livewire-components.php".
-    |
+    | Livewire 3 no longer uses a manifest file for component autoloading. Therefore, the manifest_path configuration is no longer necessary.
     */
 
     'manifest_path' => null,
@@ -156,5 +162,32 @@ return [
     */
 
     'render_on_redirect' => false,
+
+
+
+    /*
+    |The following configuration keys have been introduced in version 3:
+    |
+    |
+    |
+    */
+
+    /*
+    | Livewire 2 supported wire:model binding directly to Eloquent model properties. For example, the following was a common pattern:
+    | In Livewire 3, binding directly to Eloquent models has been disabled in favor of using individual properties, or extracting Form Objects.
+    | However, because this behavior is so heavily relied upon in Livewire applications, version 3 maintains support for this behavior via a configuration item in config/livewire.php:
+    |
+    |
+    |
+    | */
+    'legacy_model_binding' => false,
+ 
+    'inject_assets' => true,
+ 
+    'inject_morph_markers' => true,
+ 
+    'navigate' => false,
+ 
+    'pagination_theme' => 'tailwind',
 
 ];

@@ -1,4 +1,4 @@
-@extends('layouts.lentex-base')
+@extends('components.layouts.lentex-base')
 
 @section('title')
 生徒選択

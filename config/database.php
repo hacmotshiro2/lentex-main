@@ -57,7 +57,8 @@ return [
             'collation' => 'utf8mb4_general_ci',
             'prefix' => '',
             'prefix_indexes' => true,
-            'strict' => true,
+            // 'strict' => true,
+            'strict' => false, //verUp後 INSERTが失敗するので
             'engine' => null,
             'options' => extension_loaded('pdo_mysql') ? array_filter([
                 PDO::MYSQL_ATTR_SSL_CA => env('MYSQL_ATTR_SSL_CA'),

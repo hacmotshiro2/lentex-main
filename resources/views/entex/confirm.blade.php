@@ -1,4 +1,4 @@
-@extends('layouts.lentex-base')
+@extends('components.layouts.lentex-base')
 
 @section('title')
 入退室処理

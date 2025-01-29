@@ -1,5 +1,5 @@
 
-@extends('layouts.lentex-base')
+@extends('components.layouts.lentex-base')
 
 @section('title')
 生徒登録ページ

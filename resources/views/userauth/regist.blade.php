@@ -1,4 +1,4 @@
-@extends('layouts.lentex-base')
+@extends('components.layouts.lentex-base')
 
 @section('title')
 ユーザー認証登録ページ
