@@ -4,6 +4,7 @@ namespace App\Livewire;
 
 use Livewire\Component;
 use Carbon\Carbon;
+use Illuminate\Support\Facades\Log;
 
 use App\Models\Session;
 use App\Models\Plan2Attend;
@@ -32,6 +33,8 @@ class SelectSession extends Component
     //LRが選択された時の処理
     public function updatedSelectedLearningRoom($value)
     {
+        Log::info("updatedSLR", [$value]);
+
         $this->sessions = Session::with('course')
             ->where('LearningRoomCd', $value)
             ->when(function ($query) {

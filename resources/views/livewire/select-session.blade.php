@@ -1,22 +1,21 @@
 <div class="container mx-auto p-2 md:p-6 ">
-    <form method="GET"  
+    <form method="GET" action="{{ url('/select-student')}}"
       id="sessionForm" 
-      wire:ignore.self
       class="mx-auto my-2 md:my-4 max-w-2xl" style="width:75vw">
+      <!-- クエリ文字列としてsession_idをセット -->
+      <input type="hidden" name="session_idc" value="{{ $selectedSession }}">
+
         <!-- LearningRoom Selection -->
-        <div x-data="{ open: true }" class="mb-6">
+        <div class="mb-6">
             <div class="flex justify-between items-center mb-2">
                 <label class="block text-lg font-semibold" for="learningRoom">ラーニングルーム選択</label>
-                <button @click="open = !open" class="text-blue-500 hover:underline">
-                    <span x-text="open ? 'Close' : 'Open'"></span>
-                </button>
             </div>
-            <div x-show="open" class="transition-all duration-500">
-                <select id="learningRoom" wire:model="selectedLearningRoom" class="w-full p-3 border rounded text-sm md:text-base lg:text-2xl">
+            <div class="transition-all duration-500">
+                <select id="learningRoom" wire:model.live="selectedLearningRoom" class="w-full p-3 border rounded text-sm md:text-base lg:text-2xl">
                     <option value="">-- Select a LR --</option>
                     @foreach($learningRooms as $room)
                         <option value="{{ $room['LearningRoomCd'] }}">{{ $room['LearningRoomName'] }}</option>
-                    @endforeach
+                    @endforeach 
                 </select>
             </div>
         </div>
@@ -33,22 +32,23 @@
                     </a>
                 </div>
             </div>
-            <select id="session" wire:model="selectedSession" class="w-full p-3 pr-8 border rounded text-sm md:text-base lg:text-2xl">
+            <select id="session" wire:model.live="selectedSession" class="w-full p-3 pr-8 border rounded text-sm md:text-base lg:text-2xl">
                 <option value="">-- Select a Session --</option>
                 @foreach($sessions as $session)
                     <option value="{{ $session->id }}">
                         {{ \Carbon\Carbon::parse($session->sessionStartTime)->format('m月d 日 H:i') }} ～ 
-                        <span class="font-semibold" >{{$session->course->courseName}}</span>
+                        {{$session->course->courseName}}
                     </option>
                 @endforeach
             </select>
             <div class="mt-12">
                 @if($selectedSession)
-                <button formaction="{{ url('/select-student') . '?session_idc=' . $selectedSession }}" type="submit" id="submitButton" 
+                <button id="submitButton" type="submit"
                     class="text-white text-lg lg:text-2xl font-semibold bg-blue-500 hover:bg-blue-600 px-6 rounded-lg h-8 md:h-12 w-full">
                     確定
                 </button>
                 @else
+                <!-- Sessionが選択されていない時は、押せないボタン -->
                 <button type="submit" 
                     class="text-white text-lg lg:text-2xl font-semibold bg-gray-500 hover:bg-gray-600 px-6 rounded-lg h-8 md:h-12 w-full" disabled>
                     確定

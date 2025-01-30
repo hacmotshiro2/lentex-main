@@ -19,33 +19,41 @@ class SelectStudent extends Component
     #[Url(keep: true)] 
     public $session_idc='';
 
-    public $sessionId;
-    protected $queryString = ['session_id'];
+    protected $queryString = ['session_idc'];
 
     public $plan2attends = [];
     public $extraStudents = [];
-    public $extraStudentOffset = 0;
-    public $extraStudentLimit = 20;
-    public $showPastSessions = false;
 
 
-    public function mount($session_id = null)
-    // public function mount()
+    public function mount()
     {
-        Log::info('SelectStudent mount ',[$session_id]);
 
-        // クエリ文字列からsession_idを取得
-        $this->sessionId = $session_id;
-
-        $this->plan2attends = Plan2Attend::where('session_id', $this->sessionId)->get();
+        $this->plan2attends = Plan2Attend::where('session_id', $this->session_idc)->get();
 
         // 追加の学生リストをリセット
         $this->resetExtraStudents();
     }
-
+    public function render()
+    {
+        return view('livewire.select-student',
+        ['session_idc'=>$this->session_idc]
+        )
+        ->layout('components.layouts.lentex-base', [ 
+            'title' => '入退室処理',
+        ]);
+        // 既存のレイアウトを指定
+    }
+    //これを書かないと正しく表示されなかった。
+    protected function queryString()
+    {
+        return [
+            'session_idc' => [
+                'as' => 'session_idc',
+            ],
+        ];
+    }
     public function resetExtraStudents()
     {
-        $this->extraStudentOffset = 0;
         $this->loadExtraStudents();
     }
 
@@ -55,14 +63,12 @@ class SelectStudent extends Component
         $existingStudentIds = $this->plan2attends->pluck('id')->toArray();
 
         // 既出以外の学生を取得
-        $newStudents = Student::whereNotIn('id', $existingStudentIds)
-            ->offset($this->extraStudentOffset)
-            ->limit($this->extraStudentLimit)
-            ->get(['id', 'appDispName']);
+        $this->extraStudents = Student::whereNotIn('id', $existingStudentIds)
+            ->get();
 
         // 追加の学生を更新
-        $this->extraStudents = array_merge($this->extraStudents, $newStudents->toArray());
-        $this->extraStudentOffset += $this->extraStudentLimit;
+        Log::info("extraStudents",[$this->extraStudents]);
+
     }
     
     public function processStudent($studentId)
@@ -83,25 +89,7 @@ class SelectStudent extends Component
         return view('entex.confirm',$args);
     }
 
-    public function render()
-    {
-        return view('livewire.select-student',
-        ['session_id'=>$this->sessionId,
-        'session_idc'=>$this->session_idc]
-        )
-        ->layout('components.layouts.lentex-base', [ 
-            'title' => '入退室処理',
-        ]);
-        // 既存のレイアウトを指定
-    }
 
-    //これを書かないと正しく表示されなかった。
-    protected function queryString()
-    {
-        return [
-            'session_idc' => [
-                'as' => 'session_idc',
-            ],
-        ];
-    }
+
+
 }

@@ -3,6 +3,7 @@
 namespace App\Livewire;
 
 use Livewire\Component;
+use Livewire\WithPagination;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Http;
@@ -13,10 +14,20 @@ use App\Common\LR;
 
 class SessionCreate extends Component
 {
+    use WithPagination;
+
     public $sessions;
     public $showPastSessions = false;
     public $learningRooms = [];  // LearningRoomCdの選択肢を格納する変数
     public $courses;  // コース情報を格納する変数
+
+    // フィルター用の変数
+    public $filteredLRCds = '';
+    public $filteredCourseNames = '';
+    public $filteredDate = '';
+
+    public $learningRoomOptions = [];
+    public $courseOptions = [];
 
     // イベントリスナーの定義
     protected $listeners = ['deleteSession' => 'deleteSession'];
@@ -64,17 +75,37 @@ class SessionCreate extends Component
 
         // Log::Info('getlrs',$lrs());
 
-        $this->learningRooms = $lrs;  // JSONデータを配列に変換して保存
+        $this->learningRooms = $lrs; 
     }
 
     public function loadSessions()
     {
-        $this->sessions = Session::with('course')
+        // 各フィルターの選択肢を取得（重複なし）
+        $sessionsDraft = Session::when(!$this->showPastSessions, function ($query) {
+            return $query->where('sessionStartTime', '>=', Carbon::today());
+        });
+        $this->learningRoomOptions = $sessionsDraft->select('LearningRoomCd')->distinct()->pluck('LearningRoomCd')->toArray();
+        $this->courseOptions = MCourse::select('courseName')->distinct()->pluck('courseName')->toArray();
+        
+        $sessionsDraft= Session::leftJoin('m_len_course', 'r_len_session.course_id', '=', 'm_len_course.id')
             ->when(!$this->showPastSessions, function ($query) {
                 return $query->where('sessionStartTime', '>=', Carbon::today());
             })
-            ->withCount('plan2attends')
-            ->orderBy('sessionStartTime', 'asc') // 開始日の昇順
+            ->withCount('plan2attends');
+
+        // LearningRoomCdのフィルター
+        if (!empty($this->filteredLRCds)) {
+            $sessionsDraft->where('r_len_session.LearningRoomCd', $this->filteredLRCds);
+        }
+        // CourseNameのフィルター
+        if (!empty($this->filteredCourseNames)) {
+            $sessionsDraft->where('m_len_course.courseName', $this->filteredCourseNames);
+        }
+        // sessionStartTimeのフィルター（日付指定）
+        if (!empty($this->filteredDate)) {
+            $sessionsDraft->whereDate('r_len_session.sessionStartTime', $this->filteredDate);
+        }
+        $this->sessions = $sessionsDraft->orderBy('sessionStartTime', 'asc') // 開始日の昇順
             ->orderBy('course_id', 'asc')       // Course_idの昇順
             ->get();
     }
@@ -87,8 +118,6 @@ class SessionCreate extends Component
         // セッション開始と終了が12時間以上開いていればエラーとする
         $start = Carbon::parse($this->newSession['sessionStartTime']);
         $end = Carbon::parse($this->newSession['sessionEndTime']);
-
-        Log::info("custome",[$start->diffInHours($end)]);
 
         //12時間以上間があいていたらエラーにする
         if ($start->diffInHours($end) > 12) {
@@ -127,6 +156,19 @@ class SessionCreate extends Component
         if (!empty($value)) {
             $this->newSession['sessionEndTime'] = Carbon::parse($value)->addHour()->format('Y-m-d\TH:i');
         }
+    }
+    //フィルター条件が変更されたら
+    public function updatedFilteredLRCds($value)
+    {
+        $this->loadSessions();
+    }
+    public function updatedFilteredCourseNames($value)
+    {
+        $this->loadSessions();
+    }
+    public function updatedFilteredDate($value)
+    {
+        $this->loadSessions();
     }
 
     //過去のセッションを表示するチェックボックス
