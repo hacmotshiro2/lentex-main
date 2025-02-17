@@ -28,7 +28,7 @@ Route::middleware('lentex')->group(function () {
     Route::post('/entex/exit','App\Http\Controllers\EntexController@exit');
     //livewireを直接呼び出す方がよいとわかったため変更
     // Route::get('/entex/history','App\Http\Controllers\EntexController@indexEntexHistory')->name('entex-history');
-    Route::get('/entex/history',App\Http\Livewire\EntexHistory::class)->name('entex-history');
+    Route::get('/entex/history',App\Livewire\EntexHistory::class)->name('entex-history');
 
     Route::get('/student/add/', 'App\Http\Controllers\StudentController@add')->name('student-add');
     Route::post('/student/create/', 'App\Http\Controllers\StudentController@create');
@@ -44,15 +44,20 @@ Route::middleware('lentex')->group(function () {
 
     //v2.0
     Route::get('/supermenu/',function() { return view('supermenu'); })->name('supermenu');
-    Route::get('/sessions/',\App\Http\Livewire\SessionCreate::class)->name('sessions.create');
-    Route::get('/sessions/{session_id}/attendance', \App\Http\Livewire\SessionAttendanceEdit::class)->name('sessions.attend-edit');
-    Route::get('/select-session/', \App\Http\Livewire\SelectSession::class)->name('select.session');
-    Route::get('/select-student/', \App\Http\Livewire\SelectStudent::class)->name('select.student');
+    Route::get('/sessions/',\App\Livewire\SessionCreate::class)->name('sessions.create');
+    Route::get('/sessions/{session_id}/attendance', \App\Livewire\SessionAttendanceEdit::class)->name('sessions.attend-edit');
+    Route::get('/select-session/', \App\Livewire\SelectSession::class)->name('select.session');
+    Route::get('/select-student/', \App\Livewire\SelectStudent::class)->name('select.student');
+    Route::post('/entex-confirm/', \App\Livewire\EntexConfirm::class)->name('entex.confirm');
 
 });
 
 Route::get('/dashboard', function () {
     return view('dashboard');
 })->middleware(['auth', 'verified'])->name('dashboard');
+
+Route::get('/sample' , function() {
+    return view('sample');
+});
 
 require __DIR__.'/auth.php';

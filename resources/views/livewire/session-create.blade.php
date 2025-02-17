@@ -64,16 +64,24 @@
                             <!-- <button onclick="confirmDelete({{ $session->id }})" 
                                     class="inline-flex items-center text-white bg-red-500 hover:bg-red-600 focus:outline-none focus:ring-2 focus:ring-red-400 focus:ring-opacity-50 px-4 py-2 rounded-md"
                                 > -->
-                            <button 
+                            <!-- <button 
                                 type="button"
                                 wire:click="deleteSession({{ $session->id }})" 
                                 wire:confirm="{{\Carbon\Carbon::parse($session->sessionStartTime)->format('m月d日 H:i')}} のセッションを削除します。よろしいですか？"
                                 class="inline-flex items-center text-white bg-red-500 hover:bg-red-600 focus:outline-none focus:ring-2 focus:ring-red-400 focus:ring-opacity-50 px-4 py-2 rounded-md"
                                 >
                                 <i class="h-5 w-5 fa-regular fa-trash-can"></i>
+                            </button> -->
+                            <!-- 編集ボタン -->
+                            <button 
+                                type="button"
+                                wire:click="editSession({{ $session->id }})" 
+                                class="inline-flex items-center text-gray-800 bg-indigo-200 hover:bg-indigo-300 focus:outline-none focus:ring-2 focus:ring-indigo-400 focus:ring-opacity-50 px-4 py-2 rounded-md"
+                                >
+                                <i class="h-5 w-5 fa-regular fa-pen-to-square"></i>
                             </button>
                             <!-- 出席予定編集画面へのリンク -->
-                            <a href="{{ route('sessions.attend-edit', $session->id) }}" class="inline-flex items-center text-white bg-blue-500 hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-400 focus:ring-opacity-50 px-4 py-2 rounded-md">
+                            <a href="{{ route('sessions.attend-edit', $session->id) }}" class="inline-flex items-center text-white bg-indigo-500 hover:bg-indigo-600 focus:outline-none focus:ring-2 focus:ring-blue-400 focus:ring-opacity-50 px-4 py-2 rounded-md">
                                 出席予定編集へ
                                 <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns:xlink="http://www.w3.org/1999/xlink">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l7-7-7-7M5 19l7-7-7-7"></path>
@@ -87,11 +95,16 @@
         </table>
     </div>
 
-    <!-- 新規セッション作成 -->
+    <!-- セッション作成 -->
     <div class="mt-6">
-       
+        @if($mode=='create')
         <h3 class="font-semibold text-xl">新しいセッションを作成</h3>
         <form wire:submit.prevent="createSession" class="space-y-4 mt-4">
+        @elseif($mode=='update')
+        <h3 class="font-semibold text-xl">セッションを編集</h3>
+        <form wire:submit.prevent="updateSession" class="space-y-4 mt-4">
+        @endif
+            @csrf
             <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <!-- LearningRoomCd (APIから取得した選択肢) -->
                 <div class="relative">
@@ -135,7 +148,7 @@
             <!-- Submit Button -->
             <button type="submit" class="inline-flex items-center justify-center text-white bg-blue-500 hover:bg-blue-600 
                 focus:outline-none focus:ring-2 focus:ring-blue-400 focus:ring-opacity-50 px-6 py-3 rounded-md w-full mt-4">
-                セッションを登録
+                セッションを登録・更新
             </button>
         </form>
     </div>

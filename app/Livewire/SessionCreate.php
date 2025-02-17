@@ -16,10 +16,15 @@ class SessionCreate extends Component
 {
     use WithPagination;
 
+    public $mode='create'; // create or update 
+
     public $sessions;
     public $showPastSessions = false;
     public $learningRooms = [];  // LearningRoomCdの選択肢を格納する変数
     public $courses;  // コース情報を格納する変数
+
+    //編集中のレコードのid
+    public $editing_id = 0;
 
     // フィルター用の変数
     public $filteredLRCds = '';
@@ -41,13 +46,15 @@ class SessionCreate extends Component
 
     protected $rules = [
         'newSession.LearningRoomCd' => 'required|string|max:6',
-        'newSession.course_id' => 'required|integer',
+        'newSession.course_id' => 'required',
         'newSession.sessionStartTime' => 'required|date',
         'newSession.sessionEndTime' => 'required|date|after_or_equal:newSession.sessionStartTime',
     ];
 
     public function mount()
     {
+        $this->mode="create";
+        $this->editing_id = 0;
         $this->loadLearningRooms();  // APIからLearningRoomCdをロード
         $this->courses = MCourse::all();  // m_len_courseからコース情報を取得
         $this->loadSessions();
@@ -110,8 +117,64 @@ class SessionCreate extends Component
             ->get();
     }
 
+    //セッション情報作成処理
     public function createSession()
     {
+
+        //Validation
+        $this->checkInput();
+
+        //INSERT処理
+        Session::create($this->newSession);
+
+        // 通知メッセージの表示
+        session()->flash('message', 'セッションを登録しました。');
+
+        $this->editing_id = 0;
+
+        $this->newSession = [
+            'LearningRoomCd' => '',
+            'course_id' => '',
+            'sessionStartTime' => '',
+            'sessionEndTime' => '',
+        ];
+        $this->loadSessions();
+    }
+    //セッション情報更新処理
+    public function updateSession()
+    {
+
+        //Validation
+        $this->checkInput();
+
+        //UPDATE処理
+        $session = Session::findOrFail($this->editing_id);
+        $session->LearningRoomCd = $this->newSession['LearningRoomCd'];
+        $session->course_id = $this->newSession['course_id'];
+        $session->sessionStartTime = $this->newSession['sessionStartTime'];
+        $session->sessionEndTime = $this->newSession['sessionEndTime'];
+        $session->save();
+
+        // 通知メッセージの表示
+        session()->flash('message', 'セッションを更新しました。');
+
+        $this->newSession = [
+            'LearningRoomCd' => '',
+            'course_id' => '',
+            'sessionStartTime' => '',
+            'sessionEndTime' => '',
+        ];
+        $this->loadSessions();
+    }
+
+    // public function deleteSession($id)
+    // {
+    //     Session::findOrFail($id)->delete();
+    //     $this->loadSessions();
+    // }
+
+    //
+    private function checkInput(){
 
         $this->validate();
 
@@ -125,27 +188,7 @@ class SessionCreate extends Component
             return;
         }
 
-        //INSERT処理
-        Session::create($this->newSession);
-
-        // 通知メッセージの表示
-        session()->flash('message', 'セッションを登録しました。');
-
-        $this->newSession = [
-            'LearningRoomCd' => '',
-            'course_id' => '',
-            'sessionStartTime' => '',
-            'sessionEndTime' => '',
-        ];
-        $this->loadSessions();
     }
-
-    public function deleteSession($id)
-    {
-        Session::findOrFail($id)->delete();
-        $this->loadSessions();
-    }
-
     
     /* UI */
     //セッション開始日が変更されたとき
@@ -153,7 +196,7 @@ class SessionCreate extends Component
     public function updatedNewSessionSessionStartTime($value)
     {
         // もしセッション終了日が空白なら1時間後を自動セット
-        if (!empty($value)) {
+        if (!empty($value) && empty($this->newSession['sessionEndTime'])) {
             $this->newSession['sessionEndTime'] = Carbon::parse($value)->addHour()->format('Y-m-d\TH:i');
         }
     }
@@ -177,6 +220,23 @@ class SessionCreate extends Component
 
         $this->showPastSessions = !$this->showPastSessions;
         $this->loadSessions();
+    }
+
+    //「編集」ボタンを押したとき、編集モードで画面セットします。
+    public function editSession($id)
+    {
+        $this->mode="update";
+        $this->editing_id = $id;
+
+        $session = Session::findOrFail($id);
+
+        $this->newSession = [
+            'LearningRoomCd' => $session->LearningRoomCd,
+            'course_id' => $session->course_id,
+            'sessionStartTime' => $session->sessionStartTime,
+            'sessionEndTime' => $session->sessionEndTime,
+        ];
+
     }
 
 }

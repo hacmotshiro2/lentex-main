@@ -39,7 +39,11 @@
 
             <!-- Page Content -->
             <main class="container px-5 py-8 lg:py-12 mx-auto">
-
+                <div>
+                    @if(!empty($alertComp))
+                    <x-lentex-alert-completed :alert="$alertComp" />
+                    @endif
+                </div>
                 <!-- livewireテンプレートだけの場合はslot -->
                 @if (isset($slot))
                 <div class="w-full mx-auto">
