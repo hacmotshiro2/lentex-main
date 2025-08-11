@@ -61,7 +61,7 @@
             </main>
         </div>
         <!-- livewireで決まり文句 </body>の直前である必要-->
-        <!-- @livewireScripts -->
-        @livewireScriptConfig 
+        @livewireScripts
+        
     </body>
 </html>

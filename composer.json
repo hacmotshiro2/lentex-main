@@ -11,7 +11,6 @@
         "laravel/tinker": "^2.9",
         "linecorp/line-bot-sdk": "^3.6",
         "livewire/livewire": "^3.4",
-        "livewire/volt": "^1.0",
         "laravel/sanctum": "^4.0"
     },
     "require-dev": {
