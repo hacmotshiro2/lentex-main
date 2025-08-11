@@ -57,7 +57,8 @@ class LR
 
     public static function GetLRs(): array
     {
-        $base = env('LSUPPO_ROUTEURL'); // 例: https://lsuppo.manabiail-steam.com/api
+        // $base = env('LSUPPO_ROUTEURL'); // 例: https://lsuppo.manabiail-steam.com/api
+        $base  = config('lsuppo.route_url');
         if (empty($base)) {
             throw new Exception('LSUPPO_ROUTEURL is not set');
         }
