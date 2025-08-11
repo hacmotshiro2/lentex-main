@@ -3,7 +3,10 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Http;
+use Illuminate\Support\Facades\Log;
 
+use App\Common\LR; // ← 既存のLRクラス（GetLRs()で利用）
 use App\Consts\MessageConst;
 use App\Models\Student;
 use App\Models\LineUser;
@@ -12,104 +15,141 @@ use App\Http\Controllers\LINEAPIController;
 
 class EntexController extends Controller
 {
-    //GET ラーニングルーム選択画面
-    public function selectLRs(Request $request){
+    // //GET ラーニングルーム選択画面
+    // public function selectLRs(Request $request){
 
-        //エルサポのAPIを呼び出し、LR一覧を取得
-        // POST https://~/api/getlrs
-        $url = env('LSUPPO_ROUTEURL')."/getlrs";
+    //     //エルサポのAPIを呼び出し、LR一覧を取得
+    //     // POST https://~/api/getlrs
+    //     $url = env('LSUPPO_ROUTEURL')."/getlrs";
 
-        // ストリームコンテキストのオプションを作成
-        $requestData=[];
-        $options = array(
-            // HTTPコンテキストオプションをセット
-            'http' => array(
-                'method'=> 'POST',
-                'header'=> 'Content-type: application/json; charset=UTF-8', //JSON形式で表示
-                'content'=> $requestData
-            )
-        );
-        // ストリームコンテキストの作成
-        $context = stream_context_create($options);
-        try{
-            $raw_data = file_get_contents($url, false,$context);
-            if($raw_data==false){
-                abort(500);
-            }
-        }
-        catch(Exception $ex){
-            abort(500);
-        }
+    //     // ストリームコンテキストのオプションを作成
+    //     $requestData=[];
+    //     $options = array(
+    //         // HTTPコンテキストオプションをセット
+    //         'http' => array(
+    //             'method'=> 'POST',
+    //             'header'=> 'Content-type: application/json; charset=UTF-8', //JSON形式で表示
+    //             'content'=> $requestData
+    //         )
+    //     );
+    //     // ストリームコンテキストの作成
+    //     $context = stream_context_create($options);
+    //     try{
+    //         $raw_data = file_get_contents($url, false,$context);
+    //         if($raw_data==false){
+    //             abort(500);
+    //         }
+    //     }
+    //     catch(Exception $ex){
+    //         abort(500);
+    //     }
 
-        // $lrs= json_decode('[{"LearningRoomCd":"100001","LearningRoomName":"\u7389\u9020\u672c\u6821","UpdateGamen":"seeder","UpdateSystem":"lsuppo","created_at":null,"updated_at":null,"deleted_at":null},{"LearningRoomCd":"999999","LearningRoomName":"\u30c6\u30b9\u30c8LR","UpdateGamen":"manual","UpdateSystem":"manual","created_at":null,"updated_at":null,"deleted_at":null}]',true);
+    //     // $lrs= json_decode('[{"LearningRoomCd":"100001","LearningRoomName":"\u7389\u9020\u672c\u6821","UpdateGamen":"seeder","UpdateSystem":"lsuppo","created_at":null,"updated_at":null,"deleted_at":null},{"LearningRoomCd":"999999","LearningRoomName":"\u30c6\u30b9\u30c8LR","UpdateGamen":"manual","UpdateSystem":"manual","created_at":null,"updated_at":null,"deleted_at":null}]',true);
 
-        // var_dump($raw_data);
-        // var_dump(json_decode($raw_data,true));
-        // echo json_last_error(); //①
-        // echo json_last_error_msg();  
-        // 結局エルサポ側の問題だった
+    //     // var_dump($raw_data);
+    //     // var_dump(json_decode($raw_data,true));
+    //     // echo json_last_error(); //①
+    //     // echo json_last_error_msg();  
+    //     // 結局エルサポ側の問題だった
 
-        $lrs = json_decode($raw_data,true);
+    //     $lrs = json_decode($raw_data,true);
 
-        $args=[
-          'lrs'=>$lrs,
-        ];
-        return view('entex.lrs',$args);
+    //     $args=[
+    //       'lrs'=>$lrs,
+    //     ];
+    //     return view('entex.lrs',$args);
 
+    // }
+
+    // GET: ラーニングルーム選択画面
+    public function selectLRs(Request $request)
+    {
+        // 可能なら共通LRクラスを使用（内部で Http ファサード化済みが理想）
+        $lrs = LR::GetLRs();
+
+        return view('entex.lrs', ['lrs' => $lrs]);
     }
-    //POST ラーニングルームを一つ選択したとき
-    public function selectStudents(Request $request){
+    // //POST ラーニングルームを一つ選択したとき
+    // public function selectStudents(Request $request){
         
-        #TODO ラーニングルーム使用権限のチェック（将来的に）
+    //     #TODO ラーニングルーム使用権限のチェック（将来的に）
 
         
-        // POST https://~/api/getstudents
-        $url = env('LSUPPO_ROUTEURL')."/getstudents";
+    //     // POST https://~/api/getstudents
+    //     $url = env('LSUPPO_ROUTEURL')."/getstudents";
         
-        //選択したLRコードをエルサポAPIに渡す
-        $lrcd = $request->lrcd;
-        $requestData=["lrcd"=>$lrcd,];
-        // ストリームコンテキストのオプションを作成
-        $options = array(
-            // HTTPコンテキストオプションをセット
-            'http' => array(
-                'method'=> 'POST',
-                'header'=> 'Content-type: application/json; charset=UTF-8', //JSON形式で表示
-                'content'=> json_encode($requestData)
-            )
-        );
-        // var_dump($requestData);
-        // ストリームコンテキストの作成
-        $context = stream_context_create($options);
-        try{
-            $raw_data = file_get_contents($url, false,$context);
-            if($raw_data==false){
-                abort(500);
-            }
-        }
-        catch(Exception $ex){
-            abort(500);
-        }
+    //     //選択したLRコードをエルサポAPIに渡す
+    //     $lrcd = $request->lrcd;
+    //     $requestData=["lrcd"=>$lrcd,];
+    //     // ストリームコンテキストのオプションを作成
+    //     $options = array(
+    //         // HTTPコンテキストオプションをセット
+    //         'http' => array(
+    //             'method'=> 'POST',
+    //             'header'=> 'Content-type: application/json; charset=UTF-8', //JSON形式で表示
+    //             'content'=> json_encode($requestData)
+    //         )
+    //     );
+    //     // var_dump($requestData);
+    //     // ストリームコンテキストの作成
+    //     $context = stream_context_create($options);
+    //     try{
+    //         $raw_data = file_get_contents($url, false,$context);
+    //         if($raw_data==false){
+    //             abort(500);
+    //         }
+    //     }
+    //     catch(Exception $ex){
+    //         abort(500);
+    //     }
 
-        //エルサポから該当のLRに所属する生徒コードの一覧を取得
-        $studentCds = json_decode($raw_data,true);
+    //     //エルサポから該当のLRに所属する生徒コードの一覧を取得
+    //     $studentCds = json_decode($raw_data,true);
         
-        //取得した生徒コードの一覧からlentexのスチューデントマスタを取得する
+    //     //取得した生徒コードの一覧からlentexのスチューデントマスタを取得する
+    //     $students=Student::wherein('lsuppoStudentCd',$studentCds)->get();
+
+    //     //入退室から呼ばれたときは完了メッセージがついているので
+    //     $alertComp='';
+    //     if($request->session()->has('alertComp')){
+    //         $alertComp = $request->session()->get('alertComp');
+    //     }
+
+    //     $args=[
+    //         'lrcd' =>$lrcd,
+    //         'students'=>$students,
+    //         'alertComp'=>$alertComp,
+    //     ];
+
+    //     return view('entex.students',$args);
+    // }
+
+    // POST: ラーニングルームを一つ選択
+    public function selectStudents(Request $request)
+    {
+        // 入力チェック（最低限）
+        $validated = $request->validate([
+            'lrcd' => ['required', 'string', 'max:20'],
+        ]);
+        $lrcd = $validated['lrcd'];
+
+        // エルサポAPI: 該当LRに所属する生徒コード一覧を取得
+        $studentCds = $this->callLsuppo('/getstudents', ['lrcd' => $lrcd]);
+
+        // Student マスタ取得（必要なカラムだけ & 名前順など任意）
+        // $students = Student::whereIn('lsuppoStudentCd', $studentCds)
+        //     ->orderBy('messageDispName')
+        //     ->get(['id', 'lsuppoStudentCd', 'messageDispName']);
         $students=Student::wherein('lsuppoStudentCd',$studentCds)->get();
 
-        //入退室から呼ばれたときは完了メッセージがついているので
-        $alertComp='';
-        if($request->session()->has('alertComp')){
-            $alertComp = $request->session()->get('alertComp');
-        }
+        // “完了メッセージ”は取り出したら消す（pull）
+        $alertComp = $request->session()->pull('alertComp', '');
 
-        $args=[
-            'lrcd' =>$lrcd,
-            'students'=>$students,
-            'alertComp'=>$alertComp,
-        ];
-
-        return view('entex.students',$args);
+        return view('entex.students', [
+            'lrcd'      => $lrcd,
+            'students'  => $students,
+            'alertComp' => $alertComp,
+        ]);
     }
      //POST 生徒を選択したときに
      public function confirm(Request $request){
@@ -215,5 +255,45 @@ class EntexController extends Controller
 
     }
 
+    /**
+     * エルサポAPI呼び出し（共通化）
+     * @param string $path 例: '/getstudents'
+     * @param array  $payload POSTボディ
+     * @return array
+     */
+    private function callLsuppo(string $path, array $payload = []): array
+    {
+        $base = env('LSUPPO_ROUTEURL'); // 例: https://lsuppo.manabiail-steam.com/api
+        if (empty($base)) {
+            Log::error('LSUPPO_ROUTEURL is not set');
+            abort(500, MessageConst::CANT_GET_LR);
+        }
 
+        $url = rtrim($base, '/') . '/' . ltrim($path, '/');
+
+        try {
+            $http = Http::timeout(8)->acceptJson()->asJson();
+
+            // 認証が必要なら .env のトークンをヘッダへ
+            if ($token = env('LSUPPO_API_TOKEN')) {
+                $http = $http->withToken($token);
+            }
+
+            $res = $http->post($url, $payload);
+            $res->throw();
+
+            $data = $res->json();
+            if (!is_array($data)) {
+                throw new \RuntimeException('Invalid JSON structure from LSUPPO');
+            }
+            return $data;
+        } catch (\Throwable $e) {
+            Log::error('LSUPPO API error', [
+                'url'     => $url,
+                'payload' => $payload,
+                'message' => $e->getMessage(),
+            ]);
+            abort(500, MessageConst::CANT_GET_LR);
+        }
+    }
 }
