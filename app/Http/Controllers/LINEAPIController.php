@@ -34,7 +34,18 @@ class LINEAPIController extends Controller
 
         // echo $response->getHTTPStatus() . ' ' . $response->getRawBody();
         
-        \Log::info("linePushMessage",$response->getHTTPStatus() . ' ' . $response->getRawBody());
+        if (method_exists($response, 'isSucceeded') && !$response->isSucceeded()) {
+            \Log::warning('linePushMessage failed', [
+                'to'          => $userId,
+                'http_status' => $response->getHTTPStatus(),
+                'raw_body'    => $response->getRawBody(),
+            ]);
+        } else {
+            \Log::info('linePushMessage ok', [
+                'to'          => $userId,
+                'http_status' => $response->getHTTPStatus(),
+            ]);
+        }
 
         return ;
 
