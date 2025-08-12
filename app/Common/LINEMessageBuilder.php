@@ -41,7 +41,7 @@ class LINEMessageBuilder
         //1つ目 説明画像
         $originalContentURL = url("images/line_message_newregister.png");
         $previewImageURL = url("images/line_message_newregister_compressed.png");
-        if(env('APP_DEBUG')){
+        if(config('app.debug')){
             //httpを強制的にhttpsにする
             $originalContentURL = str_replace("http://","https://",$originalContentURL);
             $previewImageURL = str_replace("http://","https://",$previewImageURL);
@@ -159,7 +159,7 @@ class LINEMessageBuilder
         //2通目 カルーセルテンプレートメッセージで、次のアクションを提案する
         //1列目
         $imageURL = url("images/line_message_carousel_register.png");
-        if(env('APP_DEBUG')){
+        if(config('app.debug')){
             //httpを強制的にhttpsにする
             $imageURL = str_replace("http://","https://",$imageURL);
         }
@@ -170,7 +170,7 @@ class LINEMessageBuilder
 
         //最終列
         $imageURL = url("images/line_message_carousel_inquiry.png");
-        if(env('APP_DEBUG')){
+        if(config('app.debug')){
             //httpを強制的にhttpsにする
             $imageURL = str_replace("http://","https://",$imageURL);
         }

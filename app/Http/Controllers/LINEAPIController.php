@@ -24,15 +24,17 @@ class LINEAPIController extends Controller
     public static function linePushMessage(string $userId,string $message){
 
         //チャネルアクセストークンをセット
-        $httpClient = new CurlHTTPClient(env('LINE_CHANEL_A_TOKEN'));
+        $httpClient = new CurlHTTPClient(config('lentex.line_channel_a_token'));
         //チャネルシークレットをセット
-        $bot = new LINEBot($httpClient, ['channelSecret' => env('LINE_CHANEL_SECRET')]);
+        $bot = new LINEBot($httpClient, ['channelSecret' => config('lentex.line_channel_secret')]);
 
         $textMessageBuilder = new TextMessageBuilder($message);
         //第一引数は宛先のUserId #TODO
         $response = $bot->pushMessage($userId, $textMessageBuilder);
 
         echo $response->getHTTPStatus() . ' ' . $response->getRawBody();
+        
+        \Log::info("linePushMessage",$response);
 
         return ;
 
@@ -44,9 +46,9 @@ class LINEAPIController extends Controller
         */
 
         //チャネルアクセストークンをセット
-        $httpClient = new CurlHTTPClient(env('LINE_CHANEL_A_TOKEN'));
+        $httpClient = new CurlHTTPClient(config('lentex.line_channel_a_token'));
         //チャネルシークレットをセット
-        $bot = new LINEBot($httpClient, ['channelSecret' => env('LINE_CHANEL_SECRET')]);
+        $bot = new LINEBot($httpClient, ['channelSecret' => config('lentex.line_channel_secret')]);
        
         
         $request->collect('events')->each(function($event) use($bot){
@@ -162,7 +164,7 @@ class LINEAPIController extends Controller
 
                 /* 2.入退室履歴確認 */
                 //「入退室履歴を確認する」というメッセージが届いたら
-                else if($messageText == env('LINE_BROWSEENTEX')){
+                else if($messageText == config('line_browseentex')){
                     //返信メッセージ
                     $resMessages = [];
 

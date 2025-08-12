@@ -380,7 +380,7 @@ class EntexController extends Controller
     private function callLsuppo(string $path, array $payload = []): array
     {
         // $base = env('LSUPPO_ROUTEURL'); // 例: https://lsuppo.manabiail-steam.com/api
-        $base  = config('lsuppo.route_url');
+        $base  = config('lentex.route_url');
         if (empty($base)) {
             Log::error('LSUPPO_ROUTEURL is not set');
             abort(500, MessageConst::CANT_GET_LR);
