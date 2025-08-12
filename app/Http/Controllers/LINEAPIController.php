@@ -32,9 +32,9 @@ class LINEAPIController extends Controller
         //第一引数は宛先のUserId #TODO
         $response = $bot->pushMessage($userId, $textMessageBuilder);
 
-        echo $response->getHTTPStatus() . ' ' . $response->getRawBody();
+        // echo $response->getHTTPStatus() . ' ' . $response->getRawBody();
         
-        \Log::info("linePushMessage",$response);
+        \Log::info("linePushMessage",$response->getHTTPStatus() . ' ' . $response->getRawBody());
 
         return ;
 
