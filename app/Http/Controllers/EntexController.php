@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Carbon;
 
 use App\Common\LR; // ← 既存のLRクラス（GetLRs()で利用）
 use App\Consts\MessageConst;
@@ -15,6 +16,10 @@ use App\Http\Controllers\LINEAPIController;
 
 class EntexController extends Controller
 {
+
+    private const TYPE_ENTER = 1;
+    private const TYPE_EXIT  = 2;
+
     // //GET ラーニングルーム選択画面
     // public function selectLRs(Request $request){
 
@@ -142,13 +147,15 @@ class EntexController extends Controller
         //     ->get(['id', 'lsuppoStudentCd', 'messageDispName']);
         $students=Student::wherein('lsuppoStudentCd',$studentCds)->get();
 
-        // “完了メッセージ”は取り出したら消す（pull）
+        // “メッセージ”は取り出したら消す（pull）
         $alertComp = $request->session()->pull('alertComp', '');
+        $alertErr = $request->session()->pull('alertErr', '');
 
         return view('entex.students', [
             'lrcd'      => $lrcd,
             'students'  => $students,
             'alertComp' => $alertComp,
+            'alertErr' => $alertErr,
         ]);
     }
      //POST 生徒を選択したときに
@@ -168,76 +175,76 @@ class EntexController extends Controller
 
         return view('entex.confirm',$args);
     }
-    //POST 入室処理
-    public function enter(Request $request){
+    // //POST 入室処理
+    // public function enter(Request $request){
 
-        $lrcd = $request->lrcd;
-        $student_id = $request->student_id;
+    //     $lrcd = $request->lrcd;
+    //     $student_id = $request->student_id;
 
-        //生徒情報の取得
-        $student = Student::find($student_id);
-        //通知先の取得
-        $nots = LineUser::where('student_id',$student_id)->get();
-        //通知メッセージの作成
-        $message = $student->messageDispName."さんは".date("H:i")."に入室しました。";
+    //     //生徒情報の取得
+    //     $student = Student::find($student_id);
+    //     //通知先の取得
+    //     $nots = LineUser::where('student_id',$student_id)->get();
+    //     //通知メッセージの作成
+    //     $message = $student->messageDispName."さんは".date("H:i")."に入室しました。";
 
-        foreach($nots as $not)
-        {
-            //通知
-            LINEAPIController::linePushMessage($not->lineUserId,$message);
+    //     foreach($nots as $not)
+    //     {
+    //         //通知
+    //         LINEAPIController::linePushMessage($not->lineUserId,$message);
 
-        }
+    //     }
 
-        //入退室記録テーブルに更新
-        $entexH = new EntexHistory();
-        $entexH->student_id = $student_id;
-        $entexH->type = 1; //1:入室
-        $entexH->LearningRoomCd = $lrcd;
-        $entexH->entex_datetime = date("Y/m/d H:i:s");
+    //     //入退室記録テーブルに更新
+    //     $entexH = new EntexHistory();
+    //     $entexH->student_id = $student_id;
+    //     $entexH->type = 1; //1:入室
+    //     $entexH->LearningRoomCd = $lrcd;
+    //     $entexH->entex_datetime = date("Y/m/d H:i:s");
 
-        $entexH->save(); //INSERT
+    //     $entexH->save(); //INSERT
 
-        $args=[
-            'lrcd' => $lrcd,
-        ];
+    //     $args=[
+    //         'lrcd' => $lrcd,
+    //     ];
 
-        return redirect()->route('entex-students',$args)->with('alertComp',MessageConst::ENT_COMPLETED);
+    //     return redirect()->route('entex-students',$args)->with('alertComp',MessageConst::ENT_COMPLETED);
         
-    }
-    //POST 退室処理
-    public function exit(Request $request){
-        $lrcd = $request->lrcd;
-        $student_id = $request->student_id;
+    // }
+    // //POST 退室処理
+    // public function exit(Request $request){
+    //     $lrcd = $request->lrcd;
+    //     $student_id = $request->student_id;
 
-        //生徒情報の取得
-        $student = Student::find($student_id);
-        //通知先の取得
-        $nots = LineUser::where('student_id',$student_id)->get();
-        //通知メッセージの作成
-        $message = $student->messageDispName."さんは".date("H:i")."に退室しました。";
+    //     //生徒情報の取得
+    //     $student = Student::find($student_id);
+    //     //通知先の取得
+    //     $nots = LineUser::where('student_id',$student_id)->get();
+    //     //通知メッセージの作成
+    //     $message = $student->messageDispName."さんは".date("H:i")."に退室しました。";
 
-        foreach($nots as $not)
-        {
-            //通知
-            LINEAPIController::linePushMessage($not->lineUserId,$message);
+    //     foreach($nots as $not)
+    //     {
+    //         //通知
+    //         LINEAPIController::linePushMessage($not->lineUserId,$message);
 
-        }
+    //     }
 
-        //入退室記録テーブルに更新
-        $entexH = new EntexHistory();
-        $entexH->student_id = $student_id;
-        $entexH->type = 2; //2:退室
-        $entexH->LearningRoomCd = $lrcd;
-        $entexH->entex_datetime = date("Y/m/d H:i:s");
+    //     //入退室記録テーブルに更新
+    //     $entexH = new EntexHistory();
+    //     $entexH->student_id = $student_id;
+    //     $entexH->type = 2; //2:退室
+    //     $entexH->LearningRoomCd = $lrcd;
+    //     $entexH->entex_datetime = date("Y/m/d H:i:s");
 
-        $entexH->save(); //INSERT
+    //     $entexH->save(); //INSERT
         
-        $args=[
-            'lrcd' => $lrcd,
-        ];
-        return redirect()->route('entex-students',$args)->with('alertComp',MessageConst::EXIT_COMPLETED);
+    //     $args=[
+    //         'lrcd' => $lrcd,
+    //     ];
+    //     return redirect()->route('entex-students',$args)->with('alertComp',MessageConst::EXIT_COMPLETED);
         
-    }
+    // }
 
     //GET 入退室履歴ブラウズ
     public function indexEntexHistory(Request $request){
@@ -253,6 +260,115 @@ class EntexController extends Controller
         // return view('entex.entexhistory',$args);
         return view('entex.entexhistory');
 
+    }
+
+    // POST 入室
+    public function enter(Request $request)
+    {
+        return $this->handleEntex(
+            $request,
+            self::TYPE_ENTER,
+            '入室',
+            MessageConst::ENT_COMPLETED
+        );
+    }
+
+    // POST 退室
+    public function exit(Request $request)
+    {
+        return $this->handleEntex(
+            $request,
+            self::TYPE_EXIT,
+            '退室',
+            MessageConst::EXIT_COMPLETED
+        );
+    }
+
+    /**
+     * 共通処理本体
+     */
+    private function handleEntex(Request $request, int $type, string $actionLabel, string $flashMessage)
+    {
+        $lrcd       = $request->lrcd;
+        $studentId  = $request->student_id;
+
+        // 生徒情報
+        $student = Student::findOrFail($studentId);
+        $now     = now(); // アプリのtimezoneに従う
+
+        // 処理前チェック（3分以内に同じ処理がされている場合、処理しない）
+        if(!$this->canInsert($studentId, $type, $lrcd)){
+            return redirect()->route('entex-students',['lrcd'=>$lrcd])
+            ->with('alertErr', "3分以内に".$actionLabel."処理済みです");
+        }
+
+
+        // 通知
+        $message = $this->buildMessage($student->messageDispName, $actionLabel, $now);
+        $this->notifyLineUsers($studentId, $message);
+
+        // 履歴保存
+        $this->storeHistory($studentId, $type, $lrcd, $now);
+
+        // 戻り
+        return redirect()
+            ->route('entex-students', ['lrcd' => $lrcd])
+            ->with('alertComp', $flashMessage);
+    }
+
+    /**
+     * 通知メッセージを生成
+     */
+    private function buildMessage(string $dispName, string $actionLabel, Carbon $time): string
+    {
+        return "{$dispName}さんは{$time->format('H:i')}に{$actionLabel}しました。";
+    }
+
+    /**
+     * LINE通知を送信
+     */
+    private function notifyLineUsers(int $studentId, string $message): void
+    {
+        // IDだけ先にpluckして軽量化
+        $lineUserIds = LineUser::where('student_id', $studentId)->pluck('lineUserId');
+
+        foreach ($lineUserIds as $lineUserId) {
+            \App\Http\Controllers\LINEAPIController::linePushMessage($lineUserId, $message);
+        }
+    }
+
+    /**
+     * 入退室履歴を保存
+     */
+    private function storeHistory(int $studentId, int $type, string $lrcd, Carbon $datetime): void
+    {
+        $entexH = new EntexHistory();
+        $entexH->student_id     = $studentId;
+        $entexH->type           = $type;         // 1:入室, 2:退室
+        $entexH->LearningRoomCd = $lrcd;
+        $entexH->entex_datetime = $datetime->format('Y-m-d H:i:s');
+        $entexH->save();
+    }
+
+    //入退室が連続して行われることを防ぐ
+    private function canInsert(int $studentId, int $type, string $lrcd):bool{
+        //入退室履歴テーブルから情報を取得
+        //1分以内に同じ更新が行われている場合、更新させない。
+
+        //入退室記録テーブルに更新
+        $entexH = EntexHistory::where('student_id',$studentId)
+        ->where('type',$type)
+        ->where('LearningRoomCd', $lrcd)
+        ->where('entex_datetime','>=', now()->subMinute(3))//1分以内
+        ->get();
+
+        Log::info('canInsert',[count($entexH),$studentId,$type,$lrcd,now()->subMinute()]);
+
+        //1件以上取得できるなら、false
+        if(count($entexH)>0){
+            return false;
+        }
+        return true;
     }
 
     /**

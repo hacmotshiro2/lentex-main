@@ -43,6 +43,9 @@
                     @if(!empty($alertComp))
                     <x-lentex-alert-completed :alert="$alertComp" />
                     @endif
+                    @if(!empty($alertErr))
+                    <x-lentex-alert-error :alert="$alertErr" />
+                    @endif
                 </div>
                 <!-- livewireテンプレートだけの場合はslot -->
                 @if (isset($slot))
